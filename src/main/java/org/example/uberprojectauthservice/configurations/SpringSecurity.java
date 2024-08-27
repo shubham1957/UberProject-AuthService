@@ -24,8 +24,10 @@ public class SpringSecurity  {
                 .build();
     }
 
-    //When a method is annotated with @Bean, Spring calls this method and registers the returned object as a bean within the Spring application context.
-    // The method name usually serves as the bean name, and the return type is the bean's type.
+    /**
+     * When a method is annotated with @Bean, Spring calls this method and registers the returned object as a bean within the Spring application context.
+     * The method name usually serves as the bean name, and the return type is the bean's type.
+     */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
