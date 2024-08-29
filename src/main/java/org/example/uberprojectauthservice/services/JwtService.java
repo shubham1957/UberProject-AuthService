@@ -3,6 +3,7 @@ package org.example.uberprojectauthservice.services;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class JwtService implements CommandLineRunner {
 
@@ -30,7 +32,7 @@ public class JwtService implements CommandLineRunner {
      * @return
      */
 
-    private String createToken(Map<String, Object> payload, String email){
+    public String createToken(Map<String, Object> payload, String email){
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiry*1000L);
@@ -45,7 +47,11 @@ public class JwtService implements CommandLineRunner {
 
     }
 
-    private Claims extractAllPayloads(String token){
+    public String createToken(String email){
+        return createToken(new HashMap<>(),email);
+    }
+
+    public Claims extractAllPayloads(String token){
         return Jwts
                 .parser()
                 .setSigningKey(getSignKey())
@@ -59,11 +65,11 @@ public class JwtService implements CommandLineRunner {
         return claimsResolver.apply(claims);
     }
 
-    private Date extractExpiration(String token){
+    public Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private String extractEmail(String token){
+    public String extractEmail(String token){
         return extractClaim(token,Claims::getSubject);
     }
 
@@ -73,22 +79,22 @@ public class JwtService implements CommandLineRunner {
      * @return if token is expired ? true : false
      */
 
-    private Boolean isTokenExpired(String token){
+    public Boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
 
-    private Key getSignKey(){
+    public Key getSignKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    // This method will validate the token expiration
-    private Boolean validateToken(String token, String email){
+    // This method will validate the token
+    public Boolean validateToken(String token, String email){
         final String userEmailFetchedFromToken = extractEmail(token);
         return (userEmailFetchedFromToken.equals(email)) && (!isTokenExpired(token)) ;
     }
 
     // This method will extract the requested payload
-    private Object extractPayload(String token, String payloadKey){
+    public Object extractPayload(String token, String payloadKey){
         Claims claims = extractAllPayloads(token);
         return claims.get(payloadKey);
     }
@@ -106,6 +112,7 @@ public class JwtService implements CommandLineRunner {
         System.out.println("Name : "+extractPayload(result, "name").toString());
         System.out.println("Email : "+extractEmail(result));
         System.out.println("Phone Number : "+extractPayload(result, "phoneNumber").toString());
+        
 
     }
 }

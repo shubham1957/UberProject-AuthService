@@ -33,6 +33,11 @@ public class AuthPassengerDetails extends Passenger implements UserDetails {
         return this.username;
     }
 
+    @Override
+    public String getPassword(){
+        return this.password;
+    }
+
     // Below setup methods are not such of a concern.
     // Since "UserDetails" interface consists these method so we need to implement them
     @Override
