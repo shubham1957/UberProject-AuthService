@@ -1,7 +1,10 @@
 package org.example.uberprojectauthservice.controllers;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import org.example.uberprojectauthservice.dtos.AuthRequestDto;
 import org.example.uberprojectauthservice.dtos.AuthResponseDto;
 import org.example.uberprojectauthservice.dtos.PassengerDto;
@@ -19,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,10 +60,10 @@ public class AuthController {
             //for successful authentication create a token
             String jwtToken = jwtService.createToken(authRequestDto.getEmail());
             ResponseCookie cookie = ResponseCookie.from("JwtToken",jwtToken)
-                                    .httpOnly(true)
+                                    .httpOnly(false)
                                     .secure(false)  // cookie can be sent only to "http" request if false then can be sent only to "https" request
                                     .path("/")
-                                    .maxAge(cookieExpiry)
+                                    .maxAge(7*24*3600)
                                     .build();
 
             response.setHeader(HttpHeaders.SET_COOKIE,cookie.toString());
@@ -68,5 +73,6 @@ public class AuthController {
             throw new UsernameNotFoundException("User Not found");
         }
     }
+
 
 }
