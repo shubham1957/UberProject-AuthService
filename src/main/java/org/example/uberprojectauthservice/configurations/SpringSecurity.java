@@ -74,7 +74,9 @@ public class SpringSecurity implements WebMvcConfigurer {
     // https://medium.com/@benaya7/cors-configuration-in-spring-security-and-webmvc-lets-get-it-out-of-the-way-47ba059ca524
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry
+                .addMapping("/**")
+                .allowCredentials(true)
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
