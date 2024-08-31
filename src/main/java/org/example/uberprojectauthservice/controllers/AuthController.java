@@ -1,5 +1,6 @@
 package org.example.uberprojectauthservice.controllers;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.uberprojectauthservice.dtos.AuthRequestDto;
@@ -44,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin/passenger")
-    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response) {
         System.out.println(authRequestDto.getEmail() + ".." + authRequestDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword()));
 
@@ -65,6 +66,14 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/validate")
+    public ResponseEntity<?> validate(HttpServletRequest request){
+        System.out.println("-----");
+        for (Cookie cookie : request.getCookies()){
+            System.out.println("Name : "+cookie.getName()+"Token : "+cookie.getValue());
+        }
+        return new ResponseEntity<>("success",HttpStatus.OK);
+    }
 }
 
 

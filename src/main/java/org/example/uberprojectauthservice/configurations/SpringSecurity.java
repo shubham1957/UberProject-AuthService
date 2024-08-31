@@ -1,6 +1,8 @@
 package org.example.uberprojectauthservice.configurations;
 
+import org.example.uberprojectauthservice.filters.JwtAuthFilter;
 import org.example.uberprojectauthservice.services.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,13 +24,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SpringSecurity implements WebMvcConfigurer {
 
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return new UserDetailsServiceImpl();
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain (HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -37,6 +43,11 @@ public class SpringSecurity implements WebMvcConfigurer {
                                 .requestMatchers("/api/v1/auth/signup/*").permitAll()
                                 .requestMatchers("/api/v1/auth/signin/*").permitAll()
                 )
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/api/v1/auth/validate").authenticated()
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // UsernamePasswordAuthenticationFilter -- process and authentication form submission
                 .build();
     }
 
