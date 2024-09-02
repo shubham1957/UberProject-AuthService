@@ -33,7 +33,7 @@ public class SpringSecurity implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -42,9 +42,7 @@ public class SpringSecurity implements WebMvcConfigurer {
                                 // allow access to all the http request to these particular routes
                                 .requestMatchers("/api/v1/auth/signup/*").permitAll()
                                 .requestMatchers("/api/v1/auth/signin/*").permitAll()
-                )
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/v1/auth/validate").authenticated()
+                                .requestMatchers("/api/v1/auth/validate").authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // UsernamePasswordAuthenticationFilter -- process and authentication form submission
@@ -82,7 +80,6 @@ public class SpringSecurity implements WebMvcConfigurer {
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
-    // https://medium.com/@benaya7/cors-configuration-in-spring-security-and-webmvc-lets-get-it-out-of-the-way-47ba059ca524
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry

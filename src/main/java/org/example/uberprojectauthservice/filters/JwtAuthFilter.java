@@ -64,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(email != null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if(jwtService.validateToken(token,userDetails.getUsername())){
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, null);
                 // WebAuthenticationDetailsSource() converts the incoming request object to spring boot compatible object
                 // bridge between servlet class and spring class
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
