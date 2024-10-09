@@ -1,5 +1,6 @@
 package org.example.uberprojectauthservice.configurations;
 
+import lombok.RequiredArgsConstructor;
 import org.example.uberprojectauthservice.filters.JwtAuthFilter;
 import org.example.uberprojectauthservice.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

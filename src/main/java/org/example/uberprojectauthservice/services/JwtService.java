@@ -5,10 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -18,7 +16,7 @@ import java.util.function.Function;
 
 @Slf4j
 @Service
-public class JwtService implements CommandLineRunner {
+public class JwtService{
 
     // get the values from application.properties
     @Value("${jwt.expiry}")
@@ -29,7 +27,6 @@ public class JwtService implements CommandLineRunner {
 
     /**
      * This method will create new jwt token based on payload
-     * @return
      */
 
     public String createToken(Map<String, Object> payload, String email){
@@ -97,22 +94,5 @@ public class JwtService implements CommandLineRunner {
     public Object extractPayload(String token, String payloadKey){
         Claims claims = extractAllPayloads(token);
         return claims.get(payloadKey);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println("Time to create the token");
-
-        Map<String,Object> mp = new HashMap<>();
-        mp.put("name","Shubham");
-        mp.put("phoneNumber","8957973898");
-
-        String result = createToken(mp,"sinha@gmail.com");
-        System.out.println("Generated token is : "+result);
-        System.out.println("Name : "+extractPayload(result, "name").toString());
-        System.out.println("Email : "+extractEmail(result));
-        System.out.println("Phone Number : "+extractPayload(result, "phoneNumber").toString());
-        
-
     }
 }
